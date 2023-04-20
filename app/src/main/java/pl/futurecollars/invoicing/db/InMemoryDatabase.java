@@ -3,6 +3,7 @@ package pl.futurecollars.invoicing.db;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import pl.futurecollars.invoicing.model.Invoice;
 
 public class InMemoryDatabase implements Database {
@@ -12,17 +13,14 @@ public class InMemoryDatabase implements Database {
 
     @Override
     public int save(Invoice invoice) {
-        invoice.setIndex(index);
+        invoice.setId(index);
         invoices.put(index, invoice);
         return index++;
     }
 
     @Override
-    public Invoice getById(int id) {
-        if (!invoices.containsKey(id)) {
-            throw new IllegalArgumentException("Id " + id + " does not exist");
-        }
-        return invoices.get(id);
+    public Optional<Invoice> getById(int id) {
+        return Optional.ofNullable(invoices.get(id));
     }
 
     @Override
@@ -36,7 +34,7 @@ public class InMemoryDatabase implements Database {
         if (!invoices.containsKey(id)) {
             throw new IllegalArgumentException("Id " + id + " does not exist.");
         }
-        updatedInvoice.setIndex(id);
+        updatedInvoice.setId(id);
         invoices.put(id, updatedInvoice);
 
     }

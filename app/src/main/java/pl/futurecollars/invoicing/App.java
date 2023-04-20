@@ -19,7 +19,7 @@ public class App {
         Database db = new InMemoryDatabase();
         InvoiceService invoiceService = new InvoiceService(db);
         Company example = new Company("Sklep Komputerowy Enter", "552-168-66-00", "ul. Jesionowa 23/4 80-234 Gdańsk");
-        InvoiceEntry invoiceEntry2 = new InvoiceEntry("sddsd", BigDecimal.valueOf(23), BigDecimal.valueOf(330), Vat.VAT_0);
+        InvoiceEntry invoiceEntry2 = new InvoiceEntry("Pamięć masowa", BigDecimal.valueOf(23), BigDecimal.valueOf(330), Vat.VAT_0);
         List<InvoiceEntry> entry = new ArrayList<>();
         entry.add(invoiceEntry2);
 
@@ -28,10 +28,11 @@ public class App {
         invoiceService.save(invoice);
         invoiceService.save(invoice1);
         System.out.println(invoiceService.getById(1));
-        System.out.println(invoiceService.getById(2));
+        System.out.println(invoiceService.getById(5));
         System.out.println(invoiceService.getAll());
         invoiceService.delete(1);
         System.out.println(invoiceService.getAll());
+        System.out.println(invoiceService.save(invoice1));
     }
 
 }

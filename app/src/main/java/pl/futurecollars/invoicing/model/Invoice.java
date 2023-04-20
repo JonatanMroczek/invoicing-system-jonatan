@@ -7,17 +7,17 @@ import lombok.Data;
 
 @Data
 public class Invoice {
-    private int index;
+    private int id;
     private LocalDate date;
     private Company issuingCompany;
     private Company buyingCompany;
     private List<InvoiceEntry> invoiceEntries;
 
 
-    public Invoice(LocalDate date, Company issuingCompany, Company buyingCompany, List<InvoiceEntry> invoiceEntries) {
+    public Invoice(LocalDate date, Company buyer, Company seller, List<InvoiceEntry> invoiceEntries) {
         this.date = date;
-        this.issuingCompany = issuingCompany;
-        this.buyingCompany = buyingCompany;
+        this.issuingCompany = buyer;
+        this.buyingCompany = seller;
         this.invoiceEntries = invoiceEntries;
     }
 }
