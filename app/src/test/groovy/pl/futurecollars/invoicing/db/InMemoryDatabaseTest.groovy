@@ -7,23 +7,23 @@ import pl.futurecollars.invoicing.service.InvoiceService
 import spock.lang.Specification
 
 class InMemoryDatabaseTest extends Specification {
-    List<Invoice> invoices;
-    Database db = new InMemoryDatabase();
-    InvoiceService invoiceService = new InvoiceService(db);
-    def list = 1..10;
+    List<Invoice> invoices
+    Database db = new InMemoryDatabase()
+    InvoiceService invoiceService = new InvoiceService(db)
+    def list = 1..10
 
     void setup() {
 
-        invoices = list.collect { TestHelpers.invoice(it) };
+        invoices = list.collect { TestHelpers.invoice(it) }
     }
 
     def "should save an invoice returning id, invoice should have id set to correct value, get by id returns saved invoice"() {
         when:
-        def ids = invoices.collect { db.save(it) };
+        def ids = invoices.collect { db.save(it) }
 
         then:
         ids == 1..invoices.size()
-        ids.forEach { assert db.getById(it).isPresent() };
+        ids.forEach { assert db.getById(it).isPresent() }
         ids.forEach { assert db.getById(it).get().getId() == it }
         ids.forEach { assert db.getById(it).get() == invoices.get(it - 1) }
 
