@@ -2,6 +2,7 @@ package pl.futurecollars.invoicing.db
 
 
 import pl.futurecollars.invoicing.TestHelpers
+import pl.futurecollars.invoicing.db.memory.InMemoryDatabase
 import pl.futurecollars.invoicing.model.Invoice
 import pl.futurecollars.invoicing.service.InvoiceService
 import spock.lang.Specification
