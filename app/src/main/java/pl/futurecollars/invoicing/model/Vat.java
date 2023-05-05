@@ -2,8 +2,11 @@ package pl.futurecollars.invoicing.model;
 
 import java.math.BigDecimal;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
+
 public enum Vat {
 
     VAT_23(23),
@@ -11,7 +14,8 @@ public enum Vat {
     VAT_5(5),
     VAT_0(0),
     VAT_ZW(0);
-    final BigDecimal rate;
+
+    private final BigDecimal rate;
 
     Vat(int rate) {
         this.rate = BigDecimal.valueOf(rate);
