@@ -1,33 +1,11 @@
 package pl.futurecollars.invoicing;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.sql.SQLOutput;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import pl.futurecollars.invoicing.config.Config;
-import pl.futurecollars.invoicing.db.Database;
-import pl.futurecollars.invoicing.db.file.FileBasedDatabase;
-import pl.futurecollars.invoicing.db.file.IdService;
-import pl.futurecollars.invoicing.model.Company;
-import pl.futurecollars.invoicing.model.Invoice;
-import pl.futurecollars.invoicing.model.InvoiceEntry;
-import pl.futurecollars.invoicing.model.Vat;
-import pl.futurecollars.invoicing.service.InvoiceService;
-import pl.futurecollars.invoicing.util.FilesService;
-import pl.futurecollars.invoicing.util.JsonService;
 
 public class App {
 
     public static void main(String[] args) throws IOException {
-
+/*
         FilesService filesService = new FilesService();
         JsonService jsonService = new JsonService();
         IdService idService = new IdService(Path.of(Config.ID_FILE_LOCATION),filesService);
@@ -47,7 +25,7 @@ public class App {
 
         System.out.println(db.getAll());
         db.delete(1);
-        System.out.println(db.getAll());
+        System.out.println(db.getAll());*/
 
 //        objectMapper.writeValue(new File("invoices.yml"),invoice);
 //

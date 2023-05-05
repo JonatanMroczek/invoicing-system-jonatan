@@ -14,10 +14,11 @@ import pl.futurecollars.invoicing.util.JsonService;
 
 @AllArgsConstructor
 public class FileBasedDatabase implements Database {
-    private final FilesService filesService;
+
     private final Path databasePath;
-    private final JsonService jsonService;
     private final IdService idService;
+    private final FilesService filesService;
+    private final JsonService jsonService;
 
     @Override
     public int save(Invoice invoice) {
@@ -49,7 +50,7 @@ public class FileBasedDatabase implements Database {
         try {
             return Files.readAllLines(databasePath)
                 .stream()
-                .map(line ->jsonService.toObject(line, Invoice.class))
+                .map(line -> jsonService.toObject(line, Invoice.class))
                 .collect(Collectors.toList());
         } catch (IOException e) {
             throw new RuntimeException("Failed to read invoices from file", e);
@@ -60,34 +61,37 @@ public class FileBasedDatabase implements Database {
     public void update(int id, Invoice updatedInvoice) {
 
         try {
-            var  invoiceList = filesService.readAllLines(databasePath);
+            var invoiceList = filesService.readAllLines(databasePath);
 
-           var invoicesExpectUpdated = invoiceList
+            var invoicesExpectUpdated = invoiceList
                 .stream()
-                .filter(line -> line.contains(String.valueOf(id)))
+                .filter(line -> !line.contains(String.valueOf(id)))
                 .collect(Collectors.toList());
-           invoicesExpectUpdated.add(id,jsonService.toJson(updatedInvoice));
-           filesService.writeLinesToFile(databasePath, invoicesExpectUpdated);
+            if (invoiceList.size() == invoicesExpectUpdated.size()) {
+                throw new IllegalArgumentException("Id " + id + " does not exist.");
+            }
+            updatedInvoice.setId(id);
+            invoicesExpectUpdated.add(jsonService.toJson(updatedInvoice));
+            filesService.writeLinesToFile(databasePath, invoicesExpectUpdated);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to update invoice with id:" + id,  e);
+            throw new RuntimeException("Failed to update invoice with id:" + id, e);
         }
-
-
     }
 
     @Override
     public void delete(int id) {
         try {
-           var invoiceListExpectDeleted = filesService.readAllLines(databasePath)
-                    .stream()
-                    .filter(line -> !containsId(line, id))
-                    .collect(Collectors.toList());
-           filesService.writeLinesToFile(databasePath, invoiceListExpectDeleted);
+            var invoiceListExpectDeleted = filesService.readAllLines(databasePath)
+                .stream()
+                .filter(line -> !containsId(line, id))
+                .collect(Collectors.toList());
+            filesService.writeLinesToFile(databasePath, invoiceListExpectDeleted);
         } catch (IOException e) {
             throw new RuntimeException("Filed to delete invoice with id: " + id, e);
         }
 
     }
+
     private boolean containsId(String line, int id) {
         return line.contains("\"id\":" + id + ",");
     }
