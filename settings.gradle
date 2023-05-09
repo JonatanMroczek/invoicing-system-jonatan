@@ -13,4 +13,4 @@ plugins {
 }
 
 rootProject.name = 'invoicing-system-jonatan'
-include('app')
+
