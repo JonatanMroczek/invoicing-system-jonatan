@@ -16,4 +16,3 @@ public interface Database {
 
     Optional<Invoice> delete(int id);
 }
-

@@ -33,12 +33,3 @@ public class InvoiceApplication {
        // db.delete(1);
         System.out.println(db.getAll());*/
 }
-
-
-
-
-
-
-
-
-
