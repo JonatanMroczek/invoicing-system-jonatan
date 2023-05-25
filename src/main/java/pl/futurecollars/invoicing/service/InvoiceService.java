@@ -12,7 +12,7 @@ public class InvoiceService {
 
     private final Database db;
 
-    public InvoiceService(@Qualifier("fileBasedDatabase") Database db) {
+    public InvoiceService(@Qualifier("inMemoryDatabase") Database db) {
         this.db = db;
     }
 

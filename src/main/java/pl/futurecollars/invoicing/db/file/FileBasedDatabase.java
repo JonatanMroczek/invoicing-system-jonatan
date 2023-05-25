@@ -61,9 +61,7 @@ public class FileBasedDatabase implements Database {
             List<String> allInvoices = filesService.readAllLines(databasePath);
 
             var invoicesExpectUpdated = allInvoices.stream().filter(line -> !line.contains(String.valueOf(id))).collect(Collectors.toList());
-            if (allInvoices.size() == invoicesExpectUpdated.size()) {
-                throw new IllegalArgumentException("Id " + id + " does not exist.");
-            }
+
             updatedInvoice.setId(id);
             invoicesExpectUpdated.add(jsonService.toJson(updatedInvoice));
 
