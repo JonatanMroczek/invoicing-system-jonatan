@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import pl.futurecollars.invoicing.utils.FilesService;
 import pl.futurecollars.invoicing.utils.JsonService;
 
@@ -17,7 +16,6 @@ public class DatabaseConfiguration {
     private static final String INVOICES_FILE_NAME = "invoices.txt";
 
     @Bean
-    @Primary
     public FileBasedDatabase fileBasedDatabase(IdService idService, FilesService filesService, JsonService jsonService) throws IOException {
         Path filePath = Files.createTempFile(DATABASE_LOCATION, INVOICES_FILE_NAME);
         return new FileBasedDatabase(filePath, idService, filesService, jsonService);
