@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Repository;
 import pl.futurecollars.invoicing.db.Database;
 import pl.futurecollars.invoicing.model.Invoice;
 import pl.futurecollars.invoicing.utils.FilesService;
 import pl.futurecollars.invoicing.utils.JsonService;
 
 @AllArgsConstructor
+@Repository
 public class FileBasedDatabase implements Database {
 
     private final Path databasePath;
@@ -59,9 +61,7 @@ public class FileBasedDatabase implements Database {
             List<String> allInvoices = filesService.readAllLines(databasePath);
 
             var invoicesExpectUpdated = allInvoices.stream().filter(line -> !line.contains(String.valueOf(id))).collect(Collectors.toList());
-            if (allInvoices.size() == invoicesExpectUpdated.size()) {
-                throw new IllegalArgumentException("Id " + id + " does not exist.");
-            }
+
             updatedInvoice.setId(id);
             invoicesExpectUpdated.add(jsonService.toJson(updatedInvoice));
 
