@@ -84,7 +84,7 @@ class InvoiceControllerTest extends Specification {
         mockMvc.perform(put("$ENDPOINT/$invoiceId")
                 .content(jsonService.toJson(updatedInvoice))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isNoContent())
 
 
         then:

@@ -14,7 +14,7 @@ class TestHelpers {
     }
 
     static invoiceEntry(int id) {
-        new InvoiceEntry("Pamięć masowa $id", BigDecimal.valueOf(id * 10), BigDecimal.valueOf(id * 10 * 0.08), Vat.VAT_8)
+        new InvoiceEntry("Pamięć masowa $id", id * 2, BigDecimal.valueOf(id * 10), BigDecimal.valueOf(id * 10 * 0.08), Vat.VAT_8)
     }
 
     static invoice(int id) {
