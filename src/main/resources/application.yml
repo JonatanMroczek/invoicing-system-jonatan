@@ -1,6 +1,9 @@
 spring:
   main:
     allow-bean-definition-overriding: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 server:
   port: 7777
@@ -14,7 +17,7 @@ logging:
   level:
     org:
       springframework:
-        boot: TRACE
+        boot: INFO
     pl:
       futurecollars:
         invoicing: WARN

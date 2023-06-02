@@ -89,7 +89,7 @@ class InvoiceServiceIntegrationTests extends Specification {
     }
 
     def "updating non existing invoice is returning empty optional"() {
-     expect:
+        expect:
         service.update(100, invoices.get(1)) == Optional.empty()
 
 
