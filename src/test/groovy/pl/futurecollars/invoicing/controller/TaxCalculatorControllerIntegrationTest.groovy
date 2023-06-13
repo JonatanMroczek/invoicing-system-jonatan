@@ -5,6 +5,7 @@ import spock.lang.Unroll
 
 @Unroll
 class TaxCalculatorControllerIntegrationTest extends AbstractControllerTest {
+
     def "zeros are returned when no invoice is added to the system"() {
         when:
         def taxCalculatorResponse = calculateTax("0")
@@ -102,6 +103,5 @@ class TaxCalculatorControllerIntegrationTest extends AbstractControllerTest {
         taxCalculatorResponse.outgoingVat == 2.4
         taxCalculatorResponse.vatToReturn == 60
     }
-
 
 }

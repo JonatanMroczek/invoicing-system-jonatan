@@ -90,19 +90,6 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
 
 
     }
-
-    def "invoice can be deleted"() {
-        given:
-        addUniqueInvoices(30)
-
-        when:
-        getAllInvoices().each { invoice -> deleteInvoice(invoice.getId()) }
-
-        then:
-        getAllInvoices().size() == 0
-    }
-
-
     def "404 is returned when invoice id is not found when getting invoice by id [#id]"() {
         given:
         addUniqueInvoices(11)
@@ -149,6 +136,20 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
         where:
         id << [-100, -2, -1, 0, 12, 13, 99, 102, 1000]
     }
+
+
+    def "invoice can be deleted"() {
+        given:
+        addUniqueInvoices(30)
+
+        when:
+        getAllInvoices().each { invoice -> deleteInvoice(invoice.getId()) }
+
+        then:
+        getAllInvoices().size() == 0
+    }
+
+
 
 
 }
