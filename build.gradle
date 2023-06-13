@@ -16,6 +16,7 @@ buildscript {
         springFoxStarterVersion = "3.0.0"
         springFoxUiVersion = "2.9.2"
 
+
     }
 }
 plugins {
