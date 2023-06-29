@@ -29,10 +29,4 @@ public class Invoice {
     @ApiModelProperty(value = "List of products/services", required = true)
     private List<InvoiceEntry> invoiceEntries;
 
-    public Invoice(LocalDate date, Company buyer, Company seller, List<InvoiceEntry> invoiceEntries) {
-        this.date = date;
-        this.seller = buyer;
-        this.buyer = seller;
-        this.invoiceEntries = invoiceEntries;
-    }
 }

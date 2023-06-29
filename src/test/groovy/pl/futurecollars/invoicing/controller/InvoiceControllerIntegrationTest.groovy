@@ -33,16 +33,14 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
     }
 
     def "add invoice returns sequential id"() {
-        given:
-        def invoiceAsJson = invoiceAsJson(1)
 
         expect:
-        def firstId = addInvoiceAndReturnId(invoiceAsJson)
-        addInvoiceAndReturnId(invoiceAsJson) == firstId + 1
-        addInvoiceAndReturnId(invoiceAsJson) == firstId + 2
-        addInvoiceAndReturnId(invoiceAsJson) == firstId + 3
-        addInvoiceAndReturnId(invoiceAsJson) == firstId + 4
-        addInvoiceAndReturnId(invoiceAsJson) == firstId + 5
+        def firstId = addInvoiceAndReturnId(invoice(1))
+        addInvoiceAndReturnId(invoice(2)) == firstId + 1
+        addInvoiceAndReturnId(invoice(3)) == firstId + 2
+        addInvoiceAndReturnId(invoice(4)) == firstId + 3
+        addInvoiceAndReturnId(invoice(5)) == firstId + 4
+        addInvoiceAndReturnId(invoice(6)) == firstId + 5
     }
 
     def "all invoices are returned when getting all invoices"() {
@@ -74,7 +72,7 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
 
     def "invoice can be modified"() {
         given:
-        def invoiceId = addInvoiceAndReturnId(invoiceAsJson(57))
+        def invoiceId = addInvoiceAndReturnId(invoice(57))
         def updatedInvoice = invoice(4)
         updatedInvoice.id = invoiceId
 
@@ -90,6 +88,7 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
 
 
     }
+
     def "404 is returned when invoice id is not found when getting invoice by id [#id]"() {
         given:
         addUniqueInvoices(11)
@@ -148,8 +147,4 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
         then:
         getAllInvoices().size() == 0
     }
-
-
-
-
 }
