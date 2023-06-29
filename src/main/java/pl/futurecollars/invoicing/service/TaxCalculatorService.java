@@ -1,7 +1,6 @@
 package pl.futurecollars.invoicing.service;
 
 import java.math.BigDecimal;
-
 import java.math.RoundingMode;
 import java.util.Optional;
 import java.util.function.Predicate;
