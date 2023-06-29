@@ -16,5 +16,4 @@ public interface TaxCalculatorApi {
     @ApiOperation(value = "Get incomes, costs, vat and taxes to pay")
     @PostMapping
     TaxCalculatorResult calculateTaxes(@RequestBody Company company);
-
 }

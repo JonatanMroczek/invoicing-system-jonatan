@@ -147,6 +147,4 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
         then:
         getAllInvoices().size() == 0
     }
-
-
 }
