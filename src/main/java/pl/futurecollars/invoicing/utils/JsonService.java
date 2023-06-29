@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.stereotype.Service;
-import pl.futurecollars.invoicing.model.Invoice;
 
 @Service
 public class JsonService {
@@ -18,9 +17,9 @@ public class JsonService {
 
     }
 
-    public String toJson(Invoice invoice) {
+    public String toJson(Object object) {
         try {
-            return objectMapper.writeValueAsString(invoice);
+            return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Failed to convert string to JSON", e);
         }

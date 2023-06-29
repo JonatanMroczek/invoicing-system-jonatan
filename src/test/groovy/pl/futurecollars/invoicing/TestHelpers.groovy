@@ -14,6 +14,8 @@ class TestHelpers {
                 .name("Sklep komputerowy Enter$id")
                 .taxIdentificationNumber("$id")
                 .address("ul. Jesionowa 23/$id 80-234 Gdańsk")
+                .pensionInsurance(BigDecimal.TEN * BigDecimal.valueOf(id))
+                .healthInsurance(BigDecimal.valueOf(100) * BigDecimal.valueOf(id))
                 .build()
     }
 
@@ -21,7 +23,7 @@ class TestHelpers {
         InvoiceEntry.builder()
                 .description("Pamięć masowa $id")
                 .quantity(1)
-                .price(BigDecimal.valueOf(id * 10))
+                .netPrice(BigDecimal.valueOf(id * 10))
                 .vatValue(BigDecimal.valueOf(id * 10 * 0.08))
                 .vatRate(Vat.VAT_8)
                 .build()
