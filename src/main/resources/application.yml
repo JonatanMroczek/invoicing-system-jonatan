@@ -1,4 +1,8 @@
 spring:
+  profiles:
+    active: sql
+  flyway:
+    enabled: false
   main:
     allow-bean-definition-overriding: true
   mvc:
@@ -7,11 +11,6 @@ spring:
 
 server:
   port: 7777
-invoicing-system:
-  database: memory
-  database.directory: db
-  database.invoices.file: invoices.txt
-  database.id.file: id.txt
 
 logging:
   level:
@@ -20,5 +19,5 @@ logging:
         boot: INFO
     pl:
       futurecollars:
-        invoicing: WARN
+        invoicing: INFO
         invoicing.db: DEBUG

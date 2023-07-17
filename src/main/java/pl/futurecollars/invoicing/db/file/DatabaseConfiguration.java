@@ -36,13 +36,7 @@ public class DatabaseConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "memory")
-    public Database inMemoryDatabase() {
-        log.info("Creating in-memory database");
-        return new InMemoryDatabase();
-    }
-
-    @Bean
+    @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "file")
     public IdService idService(
         FilesService filesService,
         @Value("${invoicing-system.database.directory}") String databaseDirectory,
@@ -50,4 +44,12 @@ public class DatabaseConfiguration {
         Path idFilePath = Files.createTempFile(databaseDirectory, idFile);
         return new IdService(idFilePath, filesService);
     }
+
+    @Bean
+    @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "memory")
+    public Database inMemoryDatabase() {
+        log.info("Creating in-memory database");
+        return new InMemoryDatabase();
+    }
+
 }

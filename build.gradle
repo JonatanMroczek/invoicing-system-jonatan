@@ -15,6 +15,7 @@ buildscript {
         springDependecyManagmentVersion = "1.1.0"
         springFoxStarterVersion = "3.0.0"
         springFoxUiVersion = "2.9.2"
+        flywayVersion = "8.2.2"
 
     }
 }
@@ -40,12 +41,17 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation "org.springframework.boot:spring-boot-starter-jdbc"
     implementation "io.springfox:springfox-boot-starter:${springFoxStarterVersion}"
     implementation "io.springfox:springfox-swagger-ui:${springFoxUiVersion}"
+    implementation "org.flywaydb:flyway-core:${flywayVersion}"
+
+    runtimeOnly 'com.h2database:h2:2.2.220'
+    runtimeOnly 'org.postgresql:postgresql:42.6.0'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     // Use the latest Groovy version for Spock testing
-    testImplementation 'org.codehaus.groovy:groovy:3.0.13'
+    testImplementation 'org.codehaus.groovy:groovy:3.0.18'
 
     // Use the awesome Spock testing and specification framework even with Java
     testImplementation "org.spockframework:spock-core:${spockVersion}"
