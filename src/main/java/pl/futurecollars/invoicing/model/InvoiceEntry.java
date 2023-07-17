@@ -29,6 +29,7 @@ public class InvoiceEntry {
     @ApiModelProperty(value = "Tax rate", required = true, example = "VAT_23")
     private Vat vatRate;
 
+    @ApiModelProperty(value = "This expense is related to car, empty if expense is not related to car")
     private Car expenseRelatedToCar;
 
 }
