@@ -23,11 +23,11 @@ public class Invoice {
     @ApiModelProperty(value = "Date of invoice creation", required = true, example = "2021-05-23")
     private LocalDate date;
 
-    @ApiModelProperty(value = "Company who bought the product/service", required = true)
-    private Company seller;
-
     @ApiModelProperty(value = "Company who is selling the product/service", required = true)
     private Company buyer;
+
+    @ApiModelProperty(value = "Company who bought the product/service", required = true)
+    private Company seller;
 
     @ApiModelProperty(value = "List of products/services", required = true)
     private List<InvoiceEntry> invoiceEntries;

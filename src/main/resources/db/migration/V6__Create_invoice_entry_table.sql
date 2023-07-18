@@ -1,7 +1,7 @@
 CREATE TABLE public.invoice_entry
 (
     id bigserial NOT NULL,
-    description character varying(200) NOT NULL,
+    description character varying(200),
     quantity numeric(10, 2) NOT NULL DEFAULT 1,
     net_price numeric(10, 2) NOT NULL,
     vat_value numeric(10, 2) NOT NULL,

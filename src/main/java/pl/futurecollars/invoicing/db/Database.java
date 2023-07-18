@@ -27,4 +27,8 @@ public interface Database {
             .map(invoiceEntryToValue)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
+    default void reset() {
+        getAll().forEach(invoice -> delete(invoice.getId()));
+    }
 }
