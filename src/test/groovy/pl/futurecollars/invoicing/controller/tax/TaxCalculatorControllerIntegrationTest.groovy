@@ -7,7 +7,7 @@ import pl.futurecollars.invoicing.model.Invoice
 import pl.futurecollars.invoicing.model.InvoiceEntry
 import spock.lang.Unroll
 
-import static pl.futurecollars.invoicing.TestHelpers.company
+import static pl.futurecollars.invoicing.helpers.TestHelpers.company
 
 @Unroll
 class TaxCalculatorControllerIntegrationTest extends AbstractControllerTest {

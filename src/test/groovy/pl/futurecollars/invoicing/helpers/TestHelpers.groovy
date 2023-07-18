@@ -1,4 +1,4 @@
-package pl.futurecollars.invoicing
+package pl.futurecollars.invoicing.helpers
 
 import pl.futurecollars.invoicing.model.Company
 import pl.futurecollars.invoicing.model.Invoice
@@ -11,9 +11,9 @@ class TestHelpers {
 
     static company(int id) {
         Company.builder()
-                .name("Sklep komputerowy Enter$id")
                 .taxIdentificationNumber("$id")
                 .address("ul. Jesionowa 23/$id 80-234 Gdańsk")
+                .name("Sklep komputerowy Enter$id")
                 .pensionInsurance(BigDecimal.TEN * BigDecimal.valueOf(id))
                 .healthInsurance(BigDecimal.valueOf(100) * BigDecimal.valueOf(id))
                 .build()
@@ -32,8 +32,9 @@ class TestHelpers {
     static invoice(int id) {
         Invoice.builder()
                 .date(LocalDate.now())
-                .seller(company(id))
+                .number("2012/$id")
                 .buyer(company(id + 10))
+                .seller(company(id))
                 .invoiceEntries((1..id).collect({ invoiceEntry(it) }))
                 .build()
     }

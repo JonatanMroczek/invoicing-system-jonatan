@@ -9,7 +9,7 @@ import pl.futurecollars.invoicing.utils.JsonService
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import static pl.futurecollars.invoicing.TestHelpers.invoice
+import static pl.futurecollars.invoicing.helpers.TestHelpers.invoice
 
 @SpringBootTest
 @AutoConfigureMockMvc
