@@ -1,4 +1,4 @@
-package pl.futurecollars.invoicing.db.file;
+package pl.futurecollars.invoicing.db;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,7 +9,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
-import pl.futurecollars.invoicing.db.Database;
+import pl.futurecollars.invoicing.db.file.FileBasedDatabase;
+import pl.futurecollars.invoicing.db.file.IdService;
+import pl.futurecollars.invoicing.db.jpa.InvoiceRepository;
+import pl.futurecollars.invoicing.db.jpa.JpaDatabase;
 import pl.futurecollars.invoicing.db.memory.InMemoryDatabase;
 import pl.futurecollars.invoicing.db.sql.SqlDatabase;
 import pl.futurecollars.invoicing.utils.FilesService;
@@ -52,6 +55,12 @@ public class DatabaseConfiguration {
     public Database inMemoryDatabase() {
         log.info("Creating in-memory database");
         return new InMemoryDatabase();
+    }
+    @Bean
+    @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "jpa")
+    public Database jpaDatabase(InvoiceRepository invoiceRepository) {
+        log.info("Creating JPA database");
+        return new JpaDatabase(invoiceRepository);
     }
 
     @Bean

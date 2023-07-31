@@ -10,7 +10,7 @@
 buildscript {
     ext {
         lombokVersion = "1.18.26"
-        spockVersion = "2.2-groovy-3.0"
+        spockVersion = "2.4-M1-groovy-2.5"
         springBootVersion = "2.7.11"
         springDependecyManagmentVersion = "1.1.0"
         springFoxStarterVersion = "3.0.0"
@@ -42,6 +42,7 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation "org.springframework.boot:spring-boot-starter-jdbc"
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation "io.springfox:springfox-boot-starter:${springFoxStarterVersion}"
     implementation "io.springfox:springfox-swagger-ui:${springFoxUiVersion}"
     implementation "org.flywaydb:flyway-core:${flywayVersion}"
@@ -51,7 +52,7 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     // Use the latest Groovy version for Spock testing
-    testImplementation 'org.codehaus.groovy:groovy:3.0.18'
+    testImplementation 'org.codehaus.groovy:groovy:2.5.14'
 
     // Use the awesome Spock testing and specification framework even with Java
     testImplementation "org.spockframework:spock-core:${spockVersion}"
@@ -69,6 +70,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7.1'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.0'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.11.1'
+
 
 
 }

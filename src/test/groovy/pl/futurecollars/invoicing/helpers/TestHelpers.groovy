@@ -9,27 +9,27 @@ import java.time.LocalDate
 
 class TestHelpers {
 
-    static company(int id) {
+    static company(long id) {
         Company.builder()
                 .taxIdentificationNumber("$id")
                 .address("ul. Jesionowa 23/$id 80-234 Gdańsk")
                 .name("Sklep komputerowy Enter$id")
-                .pensionInsurance(BigDecimal.TEN * BigDecimal.valueOf(id))
-                .healthInsurance(BigDecimal.valueOf(100) * BigDecimal.valueOf(id))
+                .pensionInsurance(BigDecimal.TEN * BigDecimal.valueOf(id).setScale(2))
+                .healthInsurance(BigDecimal.valueOf(100) * BigDecimal.valueOf(id).setScale(2))
                 .build()
     }
 
-    static invoiceEntry(int id) {
+    static invoiceEntry(long id) {
         InvoiceEntry.builder()
                 .description("Pamięć masowa $id")
                 .quantity(1)
-                .netPrice(BigDecimal.valueOf(id * 10))
-                .vatValue(BigDecimal.valueOf(id * 10 * 0.08))
+                .netPrice(BigDecimal.valueOf(id * 10).setScale(2))
+                .vatValue(BigDecimal.valueOf(id * 10 * 0.08).setScale(2))
                 .vatRate(Vat.VAT_8)
                 .build()
     }
 
-    static invoice(int id) {
+    static invoice(long id) {
         Invoice.builder()
                 .date(LocalDate.now())
                 .number("2012/$id")

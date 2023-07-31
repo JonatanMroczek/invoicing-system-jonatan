@@ -49,7 +49,7 @@ public class SqlDatabase implements Database {
 
     @Override
     @Transactional
-    public int save(Invoice invoice) {
+    public long save(Invoice invoice) {
         int buyerId = insertCompany(invoice.getBuyer());
         int sellerId = insertCompany(invoice.getSeller());
 
@@ -118,7 +118,7 @@ public class SqlDatabase implements Database {
     }
 
     @Override
-    public Optional<Invoice> getById(int id) {
+    public Optional<Invoice> getById(long id) {
         List<Invoice> invoices = jdbcTemplate.query(SELECT_QUERY + " where i.id = " + id, invoiceRowMapper());
 
         return invoices.isEmpty() ? Optional.empty() : Optional.of(invoices.get(0));
@@ -126,7 +126,7 @@ public class SqlDatabase implements Database {
 
     private RowMapper<Invoice> invoiceRowMapper() {
         return (rs, rowNr) -> {
-            int invoiceId = rs.getInt("id");
+            long invoiceId = rs.getInt("id");
 
             List<InvoiceEntry> invoiceEntries = jdbcTemplate.query(
                 "select * from invoice_invoice_entry iie "
@@ -148,11 +148,11 @@ public class SqlDatabase implements Database {
                     .build());
 
             return Invoice.builder()
-                .id(rs.getInt("id"))
+                .id(rs.getLong("id"))
                 .date(rs.getDate("date").toLocalDate())
                 .number(rs.getString("number"))
                 .buyer(Company.builder()
-                    .id(rs.getInt("buyer_id"))
+                    .id(rs.getLong("buyer_id"))
                     .taxIdentificationNumber(rs.getString("buyer_tax_id"))
                     .name(rs.getString("buyer_name"))
                     .address(rs.getString("buyer_address"))
@@ -161,7 +161,7 @@ public class SqlDatabase implements Database {
                     .build()
                 )
                 .seller(Company.builder()
-                    .id(rs.getInt("seller_id"))
+                    .id(rs.getLong("seller_id"))
                     .taxIdentificationNumber(rs.getString("seller_tax_id"))
                     .name(rs.getString("seller_name"))
                     .address(rs.getString("seller_address"))
@@ -176,7 +176,7 @@ public class SqlDatabase implements Database {
 
     @Override
     @Transactional
-    public Optional<Invoice> update(int id, Invoice updatedInvoice) {
+    public Optional<Invoice> update(long id, Invoice updatedInvoice) {
         Optional<Invoice> originalInvoice = getById(id);
 
         if (originalInvoice.isEmpty()) {
@@ -196,7 +196,7 @@ public class SqlDatabase implements Database {
                 );
             ps.setDate(1, Date.valueOf(updatedInvoice.getDate()));
             ps.setString(2, updatedInvoice.getNumber());
-            ps.setInt(3, id);
+            ps.setLong(3, id);
             return ps;
         });
 
@@ -222,12 +222,12 @@ public class SqlDatabase implements Database {
             ps.setString(3, buyer.getTaxIdentificationNumber());
             ps.setBigDecimal(4, buyer.getHealthInsurance());
             ps.setBigDecimal(5, buyer.getPensionInsurance());
-            ps.setInt(6, buyer2.getId());
+            ps.setLong(6, buyer2.getId());
             return ps;
         });
     }
 
-    private void addEntriesRelatedToInvoice(int invoiceId, Invoice invoice) {
+    private void addEntriesRelatedToInvoice(long invoiceId, Invoice invoice) {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         invoice.getInvoiceEntries().forEach(entry -> {
             jdbcTemplate.update(connection -> {
@@ -250,8 +250,8 @@ public class SqlDatabase implements Database {
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(
                     "insert into invoice_invoice_entry (invoice_id, invoice_entry_id) values (?, ?);");
-                ps.setInt(1, invoiceId);
-                ps.setInt(2, invoiceEntryId);
+                ps.setLong(1, invoiceId);
+                ps.setLong(2, invoiceEntryId);
                 return ps;
             });
         });
@@ -259,7 +259,7 @@ public class SqlDatabase implements Database {
 
     @Override
     @Transactional
-    public Optional<Invoice> delete(int id) {
+    public Optional<Invoice> delete(long id) {
         Optional<Invoice> invoiceOptional = getById(id);
         if (invoiceOptional.isEmpty()) {
             return invoiceOptional;
@@ -272,34 +272,34 @@ public class SqlDatabase implements Database {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
                 "delete from invoice where id = ?;");
-            ps.setInt(1, id);
+            ps.setLong(1, id);
             return ps;
         });
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
                 "delete from company where id in (?, ?);");
-            ps.setInt(1, invoice.getBuyer().getId());
-            ps.setInt(2, invoice.getSeller().getId());
+            ps.setLong(1, invoice.getBuyer().getId());
+            ps.setLong(2, invoice.getSeller().getId());
             return ps;
         });
 
         return invoiceOptional;
     }
 
-    private void deleteEntriesAndCarsRelatedToInvoice(int id) {
+    private void deleteEntriesAndCarsRelatedToInvoice(long id) {
         jdbcTemplate.update(connection -> { // warn: makes use of delete cascade
             PreparedStatement ps = connection.prepareStatement("delete from car where id in ("
                 + "select expense_related_to_car from invoice_entry where id in ("
                 + "select invoice_entry_id from invoice_invoice_entry where invoice_id=?));");
-            ps.setInt(1, id);
+            ps.setLong(1, id);
             return ps;
         });
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
                 "delete from invoice_entry where id in (select invoice_entry_id from invoice_invoice_entry where invoice_id=?);");
-            ps.setInt(1, id);
+            ps.setLong(1, id);
             return ps;
         });
     }
