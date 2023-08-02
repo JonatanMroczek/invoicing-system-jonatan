@@ -2,12 +2,8 @@ package pl.futurecollars.invoicing.db.sql;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import javax.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -32,20 +28,6 @@ public class SqlDatabase implements Database {
         + "inner join company c1 on i.seller = c1.id "
         + "inner join company c2 on i.buyer = c2.id";
     private final JdbcTemplate jdbcTemplate;
-
-    private final Map<Vat, Integer> vatToId = new HashMap<>();
-    private final Map<Integer, Vat> idToVat = new HashMap<>();
-
-    @PostConstruct
-    void initVatRatesMap() {
-        jdbcTemplate.query("select * from vat",
-            rs -> {
-                Vat vat = Vat.valueOf("VAT_" + rs.getString("name"));
-                int id = rs.getInt("id");
-                vatToId.put(vat, id);
-                idToVat.put(id, vat);
-            });
-    }
 
     @Override
     @Transactional
@@ -126,7 +108,7 @@ public class SqlDatabase implements Database {
 
     private RowMapper<Invoice> invoiceRowMapper() {
         return (rs, rowNr) -> {
-            long invoiceId = rs.getInt("id");
+            long invoiceId = rs.getLong("id");
 
             List<InvoiceEntry> invoiceEntries = jdbcTemplate.query(
                 "select * from invoice_invoice_entry iie "
@@ -135,10 +117,10 @@ public class SqlDatabase implements Database {
                     + "where invoice_id = " + invoiceId,
                 (response, ignored) -> InvoiceEntry.builder()
                     .description(response.getString("description"))
-                    .quantity(response.getInt("quantity"))
+                    .quantity(response.getBigDecimal("quantity"))
                     .netPrice(response.getBigDecimal("net_price"))
                     .vatValue(response.getBigDecimal("vat_value"))
-                    .vatRate(idToVat.get(response.getInt("vat_rate")))
+                    .vatRate(Vat.valueOf(response.getString("vat_rate")))
                     .expenseRelatedToCar(response.getObject("registration_number") != null
                         ? Car.builder()
                         .registrationNumber(response.getString("registration_number"))
@@ -169,7 +151,7 @@ public class SqlDatabase implements Database {
                     .healthInsurance(rs.getBigDecimal("seller_health_insurance"))
                     .build()
                 )
-                .invoiceEntries(invoiceEntries)
+                .entries(invoiceEntries)
                 .build();
         };
     }
@@ -229,7 +211,7 @@ public class SqlDatabase implements Database {
 
     private void addEntriesRelatedToInvoice(long invoiceId, Invoice invoice) {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        invoice.getInvoiceEntries().forEach(entry -> {
+        invoice.getEntries().forEach(entry -> {
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection
                     .prepareStatement(
@@ -237,15 +219,15 @@ public class SqlDatabase implements Database {
                             + "values (?, ?, ?, ?, ?, ?);",
                         new String[] {"id"});
                 ps.setString(1, entry.getDescription());
-                ps.setInt(2, entry.getQuantity());
+                ps.setBigDecimal(2, entry.getQuantity());
                 ps.setBigDecimal(3, entry.getNetPrice());
                 ps.setBigDecimal(4, entry.getVatValue());
-                ps.setInt(5, vatToId.get(entry.getVatRate()));
+                ps.setString(5, entry.getVatRate().name());
                 ps.setObject(6, insertCarAndGetItId(entry.getExpenseRelatedToCar()));
                 return ps;
             }, keyHolder);
 
-            int invoiceEntryId = Objects.requireNonNull(keyHolder.getKey()).intValue();
+            int invoiceEntryId = keyHolder.getKey().intValue();
 
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(

@@ -23,10 +23,11 @@ public interface Database {
     default BigDecimal visit(Predicate<Invoice> invoicePredicate, Function<InvoiceEntry, BigDecimal> invoiceEntryToValue) {
         return getAll().stream()
             .filter(invoicePredicate)
-            .flatMap(i -> i.getInvoiceEntries().stream())
+            .flatMap(i -> i.getEntries().stream())
             .map(invoiceEntryToValue)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
     default void reset() {
         getAll().forEach(invoice -> delete(invoice.getId()));
     }

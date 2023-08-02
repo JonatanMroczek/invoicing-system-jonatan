@@ -22,7 +22,7 @@ class TestHelpers {
     static invoiceEntry(long id) {
         InvoiceEntry.builder()
                 .description("Pamięć masowa $id")
-                .quantity(1)
+                .quantity(BigDecimal.valueOf(1).setScale(2))
                 .netPrice(BigDecimal.valueOf(id * 10).setScale(2))
                 .vatValue(BigDecimal.valueOf(id * 10 * 0.08).setScale(2))
                 .vatRate(Vat.VAT_8)
@@ -35,7 +35,7 @@ class TestHelpers {
                 .number("2012/$id")
                 .buyer(company(id + 10))
                 .seller(company(id))
-                .invoiceEntries((1..id).collect({ invoiceEntry(it) }))
+                .entries((1..id).collect({ invoiceEntry(it) }))
                 .build()
     }
 }

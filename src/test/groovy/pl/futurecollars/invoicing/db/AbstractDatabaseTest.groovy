@@ -4,6 +4,7 @@ import pl.futurecollars.invoicing.model.Invoice
 import spock.lang.Specification
 
 import static pl.futurecollars.invoicing.helpers.TestHelpers.invoice
+
 abstract class AbstractDatabaseTest extends Specification {
 
     List<Invoice> invoices = (1..12).collect { invoice(it) }
@@ -21,7 +22,8 @@ abstract class AbstractDatabaseTest extends Specification {
 
     def "should save an invoice returning id, invoice should have id set to correct value, get by id returns saved invoice"() {
         when:
-        def ids = invoices.collect { database.save(it) }
+        def ids = invoices.collect { it.id = database.save(it) }
+
 
         then:
         ids == (1L..invoices.size()).collect()
@@ -31,7 +33,8 @@ abstract class AbstractDatabaseTest extends Specification {
 
             def expectedInvoice = resetIds(invoices.get((int) it - 1))
             def invoiceFromDb = resetIds(database.getById(it).get())
-            assert invoiceFromDb.toString() == expectedInvoice.toString()}
+            assert invoiceFromDb.toString() == expectedInvoice.toString()
+        }
 
 
     }
@@ -49,18 +52,26 @@ abstract class AbstractDatabaseTest extends Specification {
 
     def "getAll returns all saved invoices, deleted invoice is not returned"() {
         given:
-        invoices.forEach { database.save(it) }
+        invoices.forEach { it.id = database.save(it) }
 
         expect:
         database.getAll().size() == invoices.size()
-        database.getAll().forEach { assert it == invoices.get((int)it.getId() - 1) }
+        database.getAll().eachWithIndex { invoice, index ->
+            def invoiceAsString = resetIds(invoice).toString()
+            def expectedInvoiceAsString = resetIds(invoices.get(index)).toString()
+            assert invoiceAsString == expectedInvoiceAsString
+        }
 
         when:
         database.delete(1)
 
         then:
         database.getAll().size() == invoices.size() - 1
-        database.getAll().forEach { assert it == invoices.get((int)it.getId() - 1) }
+        database.getAll().eachWithIndex { invoice, index ->
+            def invoiceAsString = resetIds(invoice).toString()
+            def expectedInvoiceAsString = resetIds(invoices.get(index + 1)).toString()
+            assert invoiceAsString == expectedInvoiceAsString
+        }
         database.getAll().forEach({ assert it.getId() != 1 })
 
     }
@@ -84,13 +95,25 @@ abstract class AbstractDatabaseTest extends Specification {
 
     def "it's possible to update an invoice"() {
         given:
-        invoices.forEach { database.save(it) }
+        def originalInvoice = invoices.get(0)
+        originalInvoice.id = database.save(originalInvoice)
+
+        def expectedInvoice = invoices.get(1)
+        expectedInvoice.id = originalInvoice.id
 
         when:
-        database.update(1, invoices.get(4))
+        def result = database.update(originalInvoice.id, expectedInvoice)
 
         then:
-        database.getById(1).get() == invoices.get(4)
+        def invoiceAfterUpdate = database.getById(originalInvoice.id).get()
+        def invoiceAfterUpdateAsString = resetIds(invoiceAfterUpdate).toString()
+        def expectedInvoiceAfterUpdateAsString = resetIds(expectedInvoice).toString()
+        invoiceAfterUpdateAsString == expectedInvoiceAfterUpdateAsString
+
+        and:
+        def invoiceBeforeUpdateAsString = resetIds(result.get()).toString()
+        def expectedInvoiceBeforeUpdateAsString = resetIds(originalInvoice).toString()
+        invoiceBeforeUpdateAsString == expectedInvoiceBeforeUpdateAsString
     }
 
     def "updating non existing invoice is returning empty optional"() {
@@ -100,12 +123,12 @@ abstract class AbstractDatabaseTest extends Specification {
 
     }
     // resetting is necessary because database query returns ids while we don't know ids in original invoice
-    private static Invoice resetIds(Invoice invoice) {
+    protected static Invoice resetIds(Invoice invoice) {
         invoice.getBuyer().id = null
         invoice.getSeller().id = null
-        invoice.invoiceEntries.forEach {
+        invoice.entries.forEach {
             it.id = null
-       }
+        }
         invoice
     }
 }

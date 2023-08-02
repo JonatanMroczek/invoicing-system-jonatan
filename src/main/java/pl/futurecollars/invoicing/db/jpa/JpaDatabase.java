@@ -26,7 +26,7 @@ public class JpaDatabase implements Database {
 
     @Override
     public List<Invoice> getAll() {
-        return Streamable.of(invoiceRepository.findAll()).toList() ;
+        return Streamable.of(invoiceRepository.findAll()).toList();
 
     }
 
@@ -34,7 +34,7 @@ public class JpaDatabase implements Database {
     public Optional<Invoice> update(long id, Invoice updatedInvoice) {
         Optional<Invoice> invoiceOptional = getById(id);
 
-        if (invoiceOptional.isPresent()){
+        if (invoiceOptional.isPresent()) {
             Invoice invoice = invoiceOptional.get();
 
             updatedInvoice.setId(id);

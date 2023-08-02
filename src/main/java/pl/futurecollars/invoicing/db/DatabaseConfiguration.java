@@ -56,6 +56,7 @@ public class DatabaseConfiguration {
         log.info("Creating in-memory database");
         return new InMemoryDatabase();
     }
+
     @Bean
     @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "jpa")
     public Database jpaDatabase(InvoiceRepository invoiceRepository) {
