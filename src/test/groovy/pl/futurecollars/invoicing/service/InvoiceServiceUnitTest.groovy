@@ -1,7 +1,7 @@
 package pl.futurecollars.invoicing.service
 
-import pl.futurecollars.invoicing.helpers.TestHelpers
 import pl.futurecollars.invoicing.db.Database
+import pl.futurecollars.invoicing.helpers.TestHelpers
 import spock.lang.Specification
 
 class InvoiceServiceUnitTest extends Specification {
@@ -52,6 +52,7 @@ class InvoiceServiceUnitTest extends Specification {
     def "Update"() {
         given:
         def invoice = TestHelpers.invoice(5)
+        invoice.id = 1
 
         when:
         invoiceService.update(invoice.getId(), invoice)

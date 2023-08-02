@@ -1,7 +1,7 @@
 ALTER TABLE public.invoice
     ADD COLUMN buyer bigint NOT NULL;
 
-ALTER TABLE public.invoice
+ALTER TABLE  public.invoice
     ADD COLUMN seller bigint NOT NULL;
 
 ALTER TABLE public.invoice

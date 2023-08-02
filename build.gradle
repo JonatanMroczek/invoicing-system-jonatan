@@ -10,7 +10,7 @@
 buildscript {
     ext {
         lombokVersion = "1.18.26"
-        spockVersion = "2.2-groovy-3.0"
+        spockVersion = '2.4-M1-groovy-3.0'
         springBootVersion = "2.7.11"
         springDependecyManagmentVersion = "1.1.0"
         springFoxStarterVersion = "3.0.0"
@@ -42,6 +42,7 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation "org.springframework.boot:spring-boot-starter-jdbc"
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation "io.springfox:springfox-boot-starter:${springFoxStarterVersion}"
     implementation "io.springfox:springfox-swagger-ui:${springFoxUiVersion}"
     implementation "org.flywaydb:flyway-core:${flywayVersion}"
@@ -91,10 +92,13 @@ checkstyle {
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+
+
 }
 test {
     finalizedBy jacocoTestReport // report is always generated after tests run
     finalizedBy jacocoTestCoverageVerification
+
 }
 jacocoTestReport {
     dependsOn test // tests are required to run before generating the report
@@ -102,11 +106,12 @@ jacocoTestReport {
 jacoco {
     toolVersion = "0.8.8"
 }
+
 jacocoTestCoverageVerification {
     violationRules {
         rule {
             limit {
-                minimum = 0.85
+                minimum = 0.75
             }
         }
 

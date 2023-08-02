@@ -1,21 +1,21 @@
 package pl.futurecollars.invoicing.service
 
-import pl.futurecollars.invoicing.helpers.TestHelpers
 import pl.futurecollars.invoicing.db.Database
 import pl.futurecollars.invoicing.db.memory.InMemoryDatabase
 import pl.futurecollars.invoicing.model.Invoice
 import spock.lang.Specification
 
+import static pl.futurecollars.invoicing.helpers.TestHelpers.invoice
+
 class InvoiceServiceIntegrationTests extends Specification {
+    private InvoiceService service
+    private List<Invoice> invoices
 
-    List<Invoice> invoices
-    Database db = new InMemoryDatabase()
-    InvoiceService service = new InvoiceService(db)
-    def list = 1..10
+    def setup() {
+        Database db = new InMemoryDatabase()
+        service = new InvoiceService(db)
 
-    void setup() {
-
-        invoices = list.collect { TestHelpers.invoice(it) }
+        invoices = (1..12).collect { invoice(it) }
     }
 
     def "should save an invoice returning id, invoice should have id set to correct value, get by id returns saved invoice"() {
@@ -23,10 +23,10 @@ class InvoiceServiceIntegrationTests extends Specification {
         def ids = invoices.collect { service.save(it) }
 
         then:
-        ids == 1..invoices.size()
+        ids == (1L..invoices.size()).collect()
         ids.forEach { assert service.getById(it).isPresent() }
         ids.forEach { assert service.getById(it).get().getId() == it }
-        ids.forEach { assert service.getById(it).get() == invoices.get(it - 1) }
+        ids.forEach { assert service.getById(it).get() == invoices.get((int) it - 1) }
 
 
     }
@@ -48,14 +48,14 @@ class InvoiceServiceIntegrationTests extends Specification {
 
         expect:
         service.getAll().size() == invoices.size()
-        service.getAll().forEach { assert it == invoices.get(it.getId() - 1) }
+        service.getAll().forEach { assert it == invoices.get((int) it.getId() - 1) }
 
         when:
         service.delete(1)
 
         then:
         service.getAll().size() == invoices.size() - 1
-        service.getAll().forEach { assert it == invoices.get(it.getId() - 1) }
+        service.getAll().forEach { assert it == invoices.get((int) it.getId() - 1) }
         service.getAll().forEach({ assert it.getId() != 1 })
 
     }
