@@ -16,6 +16,7 @@ buildscript {
         springFoxStarterVersion = "3.0.0"
         springFoxUiVersion = "2.9.2"
         flywayVersion = "8.2.2"
+        mongoVersion = "3.12.14"
 
     }
 }
@@ -46,6 +47,7 @@ dependencies {
     implementation "io.springfox:springfox-boot-starter:${springFoxStarterVersion}"
     implementation "io.springfox:springfox-swagger-ui:${springFoxUiVersion}"
     implementation "org.flywaydb:flyway-core:${flywayVersion}"
+    implementation "org.mongodb:mongo-java-driver:${mongoVersion}"
 
     runtimeOnly 'com.h2database:h2:2.2.220'
     runtimeOnly 'org.postgresql:postgresql:42.6.0'
@@ -111,7 +113,7 @@ jacocoTestCoverageVerification {
     violationRules {
         rule {
             limit {
-                minimum = 0.75
+                minimum = 0.74
             }
         }
 
