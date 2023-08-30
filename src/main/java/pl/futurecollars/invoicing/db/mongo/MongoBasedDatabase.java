@@ -10,7 +10,7 @@ import pl.futurecollars.invoicing.db.Database;
 import pl.futurecollars.invoicing.model.Invoice;
 
 @AllArgsConstructor
-public class MongoBasedDatabase implements Database {
+public class MongoBasedDatabase implements Database <Invoice> {
 
     private final MongoCollection<Invoice> invoices;
 
