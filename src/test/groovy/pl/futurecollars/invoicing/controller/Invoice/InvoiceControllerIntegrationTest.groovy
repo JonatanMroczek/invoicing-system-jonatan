@@ -1,15 +1,17 @@
-package pl.futurecollars.invoicing.controller
+package pl.futurecollars.invoicing.controller.Invoice
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import pl.futurecollars.invoicing.controller.AbstractControllerTest
 import pl.futurecollars.invoicing.utils.JsonService
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import static pl.futurecollars.invoicing.helpers.TestHelpers.invoice
+import static pl.futurecollars.invoicing.helpers.TestHelpers.resetIds
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -53,6 +55,8 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
 
         then:
         invoices.size() == numberOfInvoices
+        invoices.forEach { resetIds(it) }
+        expectedInvoices.forEach { resetIds(it) }
         invoices == expectedInvoices
     }
 
@@ -65,7 +69,7 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
         def invoice = getInvoiceById(verifiedInvoice.getId())
 
         then:
-        invoice == verifiedInvoice
+        resetIds(invoice) == resetIds(verifiedInvoice)
 
 
     }
@@ -84,7 +88,9 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
 
 
         then:
-        getInvoiceById(invoiceId) == updatedInvoice
+        def invoiceFromDbAfterUpdate = resetIds(getInvoiceById(invoiceId))
+        def expectedInvoice = resetIds(updatedInvoice)
+        invoiceFromDbAfterUpdate.toString() == expectedInvoice.toString()
 
 
     }

@@ -7,12 +7,12 @@ import lombok.AllArgsConstructor;
 import org.bson.Document;
 import org.springframework.data.util.Streamable;
 import pl.futurecollars.invoicing.db.Database;
-import pl.futurecollars.invoicing.model.Invoice;
+import pl.futurecollars.invoicing.model.WithId;
 
 @AllArgsConstructor
-public class MongoBasedDatabase implements Database <Invoice> {
+public class MongoBasedDatabase<T extends WithId> implements Database<T> {
 
-    private final MongoCollection<Invoice> invoices;
+    private final MongoCollection<T> items;
 
     private MongoIdProvider mongoIdProvider;
 
@@ -21,31 +21,30 @@ public class MongoBasedDatabase implements Database <Invoice> {
     }
 
     @Override
-    public long save(Invoice invoice) {
-        long id = mongoIdProvider.getNextAndIncrement();
-        invoice.setId(id);
-        invoices.insertOne(invoice);
-        return id;
+    public long save(T item) {
+        item.setId(mongoIdProvider.getNextAndIncrement());
+        items.insertOne(item);
+        return item.getId();
     }
 
     @Override
-    public Optional<Invoice> getById(long id) {
-        return Optional.ofNullable(invoices.find(idFilter(id)).first());
+    public Optional<T> getById(long id) {
+        return Optional.ofNullable(items.find(idFilter(id)).first());
     }
 
     @Override
-    public List<Invoice> getAll() {
-        return Streamable.of(invoices.find()).toList();
+    public List<T> getAll() {
+        return Streamable.of(items.find()).toList();
     }
 
     @Override
-    public Optional<Invoice> update(long id, Invoice updatedInvoice) {
-        updatedInvoice.setId(id);
-        return Optional.ofNullable(invoices.findOneAndReplace(idFilter(id), updatedInvoice));
+    public Optional<T> update(long id, T updatedItem) {
+        updatedItem.setId(id);
+        return Optional.ofNullable(items.findOneAndReplace(idFilter(id), updatedItem));
     }
 
     @Override
-    public Optional<Invoice> delete(long id) {
-        return Optional.ofNullable(invoices.findOneAndDelete(idFilter(id)));
+    public Optional<T> delete(long id) {
+        return Optional.ofNullable(items.findOneAndDelete(idFilter(id)));
     }
 }

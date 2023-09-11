@@ -14,7 +14,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.futurecollars.invoicing.db.WithId;
 
 @Data
 @NoArgsConstructor

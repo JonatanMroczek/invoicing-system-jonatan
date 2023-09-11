@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AbstractControllerTest extends Specification {
 
     static final String INVOICE_ENDPOINT = "/invoices"
+    static final String COMPANY_ENDPOINT = "/companies"
     static final String TAX_CALCULATOR_ENDPOINT = "/tax"
 
     @Autowired
@@ -30,13 +31,22 @@ class AbstractControllerTest extends Specification {
 
     def setup() {
         getAllInvoices().each { invoice -> deleteInvoice(invoice.id) }
+        getAllCompanies().each { company -> deleteCompany(company.id) }
     }
 
     int addInvoiceAndReturnId(Invoice invoice) {
+        addAndReturnId(invoice, INVOICE_ENDPOINT)
+    }
+
+    int addCompanyAndReturnId(Company company) {
+        addAndReturnId(company, COMPANY_ENDPOINT)
+    }
+
+    private <T> int addAndReturnId(T item, String endpoint) {
         Integer.valueOf(
                 mockMvc.perform(
-                        post(INVOICE_ENDPOINT)
-                                .content(jsonService.toJson(invoice))
+                        post(endpoint)
+                                .content(jsonService.toJson(item))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                         .andExpect(status().isOk())
@@ -47,13 +57,21 @@ class AbstractControllerTest extends Specification {
     }
 
     List<Invoice> getAllInvoices() {
-        def response = mockMvc.perform(get(INVOICE_ENDPOINT))
+        return getAll(Invoice[], INVOICE_ENDPOINT)
+    }
+
+    List<Company> getAllCompanies() {
+        return getAll(Company[], COMPANY_ENDPOINT)
+    }
+
+    private <T> T getAll(Class<T> clazz, String endpoint) {
+        def response = mockMvc.perform(get(endpoint))
                 .andExpect(status().isOk())
                 .andReturn()
                 .response
                 .contentAsString
 
-        jsonService.toObject(response, Invoice[])
+        jsonService.toObject(response, clazz)
     }
 
     List<Invoice> addUniqueInvoices(int count) {
@@ -64,23 +82,48 @@ class AbstractControllerTest extends Specification {
         }
     }
 
+    List<Company> addUniqueCompanies(int count) {
+        (1..count).collect { id ->
+            def company = TestHelpers.company(id)
+            company.id = addCompanyAndReturnId(company)
+            return company
+        }
+    }
+
     void deleteInvoice(long id) {
         mockMvc.perform(delete("$INVOICE_ENDPOINT/$id"))
                 .andExpect(status().isNoContent())
     }
 
+    void deleteCompany(long id) {
+        mockMvc.perform(delete("$COMPANY_ENDPOINT/$id"))
+                .andExpect(status().isNoContent())
+    }
+
     Invoice getInvoiceById(long id) {
-        def invoiceAsString = mockMvc.perform(get("$INVOICE_ENDPOINT/$id"))
+        getById(id, Invoice, INVOICE_ENDPOINT)
+    }
+
+    Company getCompanyById(long id) {
+        getById(id, Company, COMPANY_ENDPOINT)
+    }
+
+    <T> T getById(long id, Class<T> clazz, String endpoint) {
+        def itemAsString = mockMvc.perform(get("$endpoint/$id"))
                 .andExpect(status().isOk())
                 .andReturn()
                 .response
                 .contentAsString
 
-        jsonService.toObject(invoiceAsString, Invoice)
+        jsonService.toObject(itemAsString, clazz)
     }
 
     String invoiceAsJson(long id) {
         jsonService.toJson(TestHelpers.invoice(id))
+    }
+
+    String companyAsJson(long id) {
+        jsonService.toJson(TestHelpers.company(id))
     }
 
     TaxCalculatorResult calculateTax(Company company) {

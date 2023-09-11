@@ -38,4 +38,14 @@ class TestHelpers {
                 .entries((1..id).collect({ invoiceEntry(it) }))
                 .build()
     }
+
+    static Invoice resetIds(Invoice invoice) {
+        invoice.getBuyer().id = null
+        invoice.getSeller().id = null
+        invoice.entries.forEach {
+            it.id = null
+            it.expenseRelatedToCar?.id = null
+        }
+        invoice
+    }
 }
