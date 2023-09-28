@@ -1,35 +1,40 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Company } from "./company"
-
+import { CompanyService } from './company.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  companies: Company[] = [
-    new Company(
-      "111-222-22-22",
-      "ul.Jesionowa 2",
-      "First INC.",
-      22.22,
-      11.22
-    )
-  ];
+export class AppComponent implements OnInit {
 
-  newCompany: Company = new Company("", "", "", 0, 0);
+  companies: Company[] = [];
+
+  newCompany: Company = new Company(0, "", "", "", 0, 0);
+   constructor(
+          private companiesService: CompanyService
+      ) {
+      }
+
+        ngOnInit(): void {
+              this.companiesService.getCompanies()
+                  .subscribe(companies => {
+                      this.companies = companies;
+                  });
+          }
 
   addCompany() {
     this.companies.push(this.newCompany);
-    this.newCompany = new Company("", "", "", 0, 0)
+    this.newCompany = new Company(0, "", "", "", 0, 0)
   }
-  
+
   deleteCompany(companyToDelete: Company){
     this.companies = this.companies.filter(company => company !==companyToDelete )
   }
 
   triggerUpdate(company: Company){
     company.editedCompany = new Company(
+      company.id,
       company.taxIdentificationNumber,
       company.address,
       company.name,
